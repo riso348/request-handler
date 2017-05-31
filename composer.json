@@ -1,0 +1,12 @@
+{
+    "name": "tyrion/request-handler",
+    "keywords": ["request", "get", "post" , "handle"],
+    "autoload": {
+        "psr-0" : {
+            "TyrionCMS\\RequestHandler" : "src"
+        }
+    },
+    "require": {
+        "php": ">=7.1.0"
+    }
+}
