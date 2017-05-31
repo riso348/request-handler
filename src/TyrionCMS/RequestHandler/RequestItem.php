@@ -1,7 +1,7 @@
 <?php namespace TyrionCMS\RequestHandler;
 
 use ArrayIterator;
-use TyrionCMS\RequestHandler\RequestFindException;
+use TyrionCMS\RequestHandler\Exceptions\RequestFindException;
 
 class RequestItem extends ArrayIterator
 {

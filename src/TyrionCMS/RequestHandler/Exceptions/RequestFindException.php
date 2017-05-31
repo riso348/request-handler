@@ -1,12 +1,4 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: richard
- * Date: 31.5.2017
- * Time: 11:02
- */
-
-namespace TyrionCMS\RequestHandler;
+<?php namespace TyrionCMS\RequestHandler\Exceptions;
 
 
 class RequestFindException extends \Exception
