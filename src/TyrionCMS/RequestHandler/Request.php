@@ -45,11 +45,11 @@ final class Request
     {
         if (is_numeric($value) && (int)$value[0] === 0) {
             return $value;
-        } else if (is_numeric($value) && strpos($value, '.') === false && strpos($value, ',') === false) {
+        } else if (is_numeric($value) && strpos($value, '.') === false && strpos($value, ',') === false && strlen((int)$value) === strlen($value)) {
             return (int)$value;
-        } elseif (is_numeric($value) && (strpos($value, ',') !== false || strpos($value, '.') !== false)) {
+        } elseif (is_numeric($value) && (strpos($value, ',') !== false || strpos($value, '.') !== false) && strlen((float)$value) === strlen($value)) {
             return (float)str_replace(',', '.', $value);
-        } elseif (is_numeric(str_replace(',', '.', $value))) {
+        } elseif (is_numeric(str_replace(',', '.', $value)) && strlen((float)str_replace(',', '.', $value)) === strlen(str_replace(',', '.', $value))) {
             return (float)str_replace(',', '.', $value);
         } elseif ($value === 'true') {
             return true;
