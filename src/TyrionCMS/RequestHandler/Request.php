@@ -17,9 +17,11 @@ final class Request
     {
         if ($key == null) {
             $gets = array();
-            foreach ($_GET as $key => $value) {
-                $value = $this->parseDataType($value);
-                $gets[] = $this->createRequestItem('get', $key, $value);;
+            if (is_array($_GET)) {
+                foreach ($_GET as $key => $value) {
+                    $value = $this->parseDataType($value);
+                    $gets[] = $this->createRequestItem('get', $key, $value);;
+                }
             }
             return $this->createFinalRequestItem($gets);
         } else {
@@ -62,7 +64,7 @@ final class Request
         }
     }
 
-    private function createRequestItem(String $method, String $key, $value): RequestItem
+    private function createRequestItem(string $method, string $key, $value): RequestItem
     {
         $requestItem = new RequestItem();
         $requestItem->setMethod($method);
@@ -79,9 +81,11 @@ final class Request
     {
         if ($key == null) {
             $posts = array();
-            foreach ($_POST as $key => $value) {
-                $value = $this->parseDataType($value);
-                $posts[] = $this->createRequestItem('post', $key, $value);
+            if (is_array($_POST)) {
+                foreach ($_POST as $key => $value) {
+                    $value = $this->parseDataType($value);
+                    $posts[] = $this->createRequestItem('post', $key, $value);
+                }
             }
             return $this->createFinalRequestItem($posts);
         } else {
@@ -98,9 +102,11 @@ final class Request
     {
         if ($key == null) {
             $requests = array();
-            foreach ($_REQUEST as $key => $value) {
-                $value = $this->parseDataType($value);
-                $requests[] = $this->createRequestItem('request', $key, $value);
+            if (is_array($_REQUEST)) {
+                foreach ($_REQUEST as $key => $value) {
+                    $value = $this->parseDataType($value);
+                    $requests[] = $this->createRequestItem('request', $key, $value);
+                }
             }
             return $this->createFinalRequestItem($requests);
         } else {
@@ -109,10 +115,10 @@ final class Request
         }
     }
 
-    private function createFinalRequestItem($data):RequestItem
+    private function createFinalRequestItem($data): RequestItem
     {
-        $requestItem =  new RequestItem($data);
-        if($this->requestItemHiddenParams){
+        $requestItem = new RequestItem($data);
+        if ($this->requestItemHiddenParams) {
             $requestItem->setHiddenParams($data);
         }
         return $requestItem;
