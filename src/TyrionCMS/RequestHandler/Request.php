@@ -51,7 +51,7 @@ final class Request
             return (int)$value;
         } elseif (is_numeric($value) && (strpos(strval($value), ',') !== false || strpos(strval($value), '.') !== false) && strlen(strval($value)) === strlen($value)) {
             return (float)str_replace(',', '.', strval($value));
-        } elseif (is_numeric(str_replace(',', '.', strval($value))) && strlen((string)str_replace(',', '.', $value)) === strlen(str_replace(',', '.', $value))) {
+        } elseif (is_scalar($value) && is_numeric(str_replace(',', '.', strval($value))) && strlen((string)str_replace(',', '.', $value)) === strlen(str_replace(',', '.', $value))) {
             return (float)str_replace(',', '.', strval($value));
         } elseif ($value === 'true') {
             return true;
