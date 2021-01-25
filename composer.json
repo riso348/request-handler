@@ -1,11 +1,20 @@
 {
     "name": "tyrion/request-handler",
     "keywords": ["request", "get", "post" , "handle"],
+    "license": "MIT",
+    "version": "1.1.0",
+    "prefer-stable": true,
     "autoload": {
         "psr-0" : {
             "TyrionCMS\\RequestHandler" : "src"
         }
     },
+    "authors": [
+        {
+            "name": "Richard Vaclavik",
+            "email": "riso.vaclavik@gmail.com"
+        }
+    ],
     "require": {
         "php": ">=7.1.0"
     }

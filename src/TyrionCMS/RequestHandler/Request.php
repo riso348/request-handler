@@ -45,7 +45,7 @@ final class Request
 
     private function checkValue($value)
     {
-        if (is_numeric($value) && (int)$value[0] === 0) {
+        if (is_numeric($value) && ((string)$value)[0] === '0') {
             return $value;
         } else if (is_numeric($value) && strpos($value, '.') === false && strpos($value, ',') === false && strlen((int)$value) === strlen($value)) {
             return (int)$value;
