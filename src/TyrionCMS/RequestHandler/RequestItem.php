@@ -82,7 +82,7 @@ class RequestItem extends ArrayIterator
 
         $values = array();
         while ($this->valid()) {
-            $values[$this->current()->getKey()] = $this->current()->getValue();
+            $values[$this->current()->getKey()] = $this->current()->setPreventXss($this->preventXSS)->getValue();
             $this->next();
         }
         $this->values = $values;
@@ -113,7 +113,8 @@ class RequestItem extends ArrayIterator
             $this->next();
         }
         $this->rewind();
-        if ($found) {
+        if ($found instanceof RequestItem) {
+            $found->setPreventXss($this->preventXSS);
             return $found;
         } elseif ($nullable) {
             return new RequestItem();
