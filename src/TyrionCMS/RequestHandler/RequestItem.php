@@ -11,6 +11,7 @@ class RequestItem extends ArrayIterator
     private $value = null;
     private $values;
     private $hiddenParams = array();
+    private $preventXSS = true;
 
     /**
      * @return mixed
@@ -69,15 +70,15 @@ class RequestItem extends ArrayIterator
     {
 
         if($this->value == null && $value !== null){
-            return $value;
+            return $this->preventXSS ? $this->preventXSSValue($value) : $value;
         }
-        return $this->value;
+        return $this->preventXSS ? $this->preventXSSValue($this->value) : $this->value;
     }
 
     public function getValues()
     {
         if(is_array($this->values)){
-            return $this->values;
+            return $this->preventXSS ? $this->preventXSSValue($this->values) : $this->values;
         }
 
         $values = array();
@@ -87,7 +88,7 @@ class RequestItem extends ArrayIterator
             $this->next();
         }
         $this->values = $values;
-        return $values;
+        return $this->preventXSS ? $this->preventXSSValue($values) : $values;
     }
 
     public function getClearValues(array $ignoredParams = array())
@@ -98,7 +99,7 @@ class RequestItem extends ArrayIterator
                 unset($params[$key]);
             }
         }
-        return $params;
+        return $this->preventXSS ? $this->preventXSSValue($params) : $params;
     }
 
 
@@ -169,6 +170,34 @@ class RequestItem extends ArrayIterator
         }
         $url = rtrim($url , '&');
         return $url;
+    }
+
+    public function preventXSSValue($value)
+    {
+        $preventString = function (string $value) {
+            $antiXss = new \voku\helper\AntiXSS();
+            return $antiXss->xss_clean($value);
+        };
+
+        if (is_string($value)) {
+            $value = strip_tags($value);
+        } else if (is_array($value)) {
+            array_walk_recursive(
+                $value,
+                function (&$value) use ($preventString) {
+                    if (is_scalar($value)) {
+                        $value = $preventString($value);
+                    }
+                }
+            );
+        }
+        return $value;
+    }
+
+    public function setPreventXss(bool $value)
+    {
+        $this->preventXSS = $value;
+        return $this;
     }
 
 }

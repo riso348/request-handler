@@ -38,9 +38,6 @@ final class Request
         if (is_array($data)) {
             foreach ($data as $key => $value) {
                 $value = $this->checkValue($value);
-                if ($this->preventXSS) {
-                    $value = $this->preventXSSValue($value);
-                }
                 $data[$key] = $value;
             }
             return $data;
@@ -134,32 +131,6 @@ final class Request
         return $requestItem;
     }
 
-    public function preventXSSValue($value)
-    {
-        $preventString = function (string $value) {
-            $antiXss = new \voku\helper\AntiXSS();
-            return $antiXss->xss_clean($value);
-        };
 
-        if (is_string($value)) {
-            $value = strip_tags($value);
-        } else if (is_array($value)) {
-            array_walk_recursive(
-                $value,
-                function (&$value) use ($preventString) {
-                    if (is_scalar($value)) {
-                        $value = $preventString($value);
-                    }
-                }
-            );
-        }
-        return $value;
-    }
-
-    public function setPreventXss(bool $value)
-    {
-        $this->preventXSS = $value;
-        return $this;
-    }
 
 }
