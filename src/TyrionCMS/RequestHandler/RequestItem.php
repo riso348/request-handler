@@ -88,6 +88,7 @@ class RequestItem extends ArrayIterator
             $this->next();
         }
         $this->values = $values;
+        $this->rewind();
         return $this->preventXSS ? $this->preventXSSValue($values) : $values;
     }
 
