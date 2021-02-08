@@ -69,7 +69,7 @@ class RequestItem extends ArrayIterator
     public function getValue($value = null)
     {
 
-        if($this->value == null && $value !== null){
+        if ($this->value == null && $value !== null) {
             return $this->preventXSS ? $this->preventXSSValue($value) : $value;
         }
         return $this->preventXSS ? $this->preventXSSValue($this->value) : $this->value;
@@ -77,13 +77,12 @@ class RequestItem extends ArrayIterator
 
     public function getValues()
     {
-        if(is_array($this->values)){
+        if (is_array($this->values)) {
             return $this->preventXSS ? $this->preventXSSValue($this->values) : $this->values;
         }
 
         $values = array();
-        while( $this->valid() )
-        {
+        while ($this->valid()) {
             $values[$this->current()->getKey()] = $this->current()->getValue();
             $this->next();
         }
@@ -95,8 +94,8 @@ class RequestItem extends ArrayIterator
     public function getClearValues(array $ignoredParams = array())
     {
         $params = $this->getValues();
-        foreach ($params as $key => $param){
-            if(in_array($key, $this->getHiddenParams()) || in_array($key , $ignoredParams)){
+        foreach ($params as $key => $param) {
+            if (in_array($key, $this->getHiddenParams()) || in_array($key, $ignoredParams)) {
                 unset($params[$key]);
             }
         }
@@ -104,24 +103,23 @@ class RequestItem extends ArrayIterator
     }
 
 
-    public function find(String $key, $nullable = false): ? RequestItem
+    public function find(string $key, $nullable = false): ?RequestItem
     {
         $found = false;
-        while( $this->valid() )
-        {
-            if($this->current()->getKey() == $key){
+        while ($this->valid()) {
+            if ($this->current()->getKey() == $key) {
                 $found = $this->current();
                 break;
             }
             $this->next();
         }
         $this->rewind();
-        if($found){
+        if ($found) {
             return $found;
-        }elseif($nullable){
+        } elseif ($nullable) {
             return new RequestItem();
         }
-        throw new RequestFindException("Unable to find request key: ".$key);
+        throw new RequestFindException("Unable to find request key: " . $key);
     }
 
     /**
@@ -158,18 +156,18 @@ class RequestItem extends ArrayIterator
         }
     }
 
-    public function generateURL():string
+    public function generateURL(): string
     {
         $url = "?";
-        foreach($this->getValues() as $key => $value){
-            if (in_array($key , $this->getHiddenParams())){
+        foreach ($this->getValues() as $key => $value) {
+            if (in_array($key, $this->getHiddenParams())) {
                 continue;
             }
             $url .= "$key=";
             $url .= urlencode($value);
             $url .= "&";
         }
-        $url = rtrim($url , '&');
+        $url = rtrim($url, '&');
         return $url;
     }
 
