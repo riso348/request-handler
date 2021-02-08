@@ -170,7 +170,7 @@ class RequestItem extends ArrayIterator
         return $url;
     }
 
-    public function preventXSSValue($value)
+    private function preventXSSValue($value)
     {
         $preventString = function (string $value) {
             $antiXss = new \voku\helper\AntiXSS();
