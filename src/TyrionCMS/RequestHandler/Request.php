@@ -4,7 +4,6 @@
 final class Request
 {
     private $requestItemHiddenParams;
-    private $preventXSS = true;
 
     public function __construct(array $requestItemHiddenParams = null)
     {
