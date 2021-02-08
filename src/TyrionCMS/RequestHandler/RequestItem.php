@@ -68,7 +68,6 @@ class RequestItem extends ArrayIterator
      */
     public function getValue($value = null)
     {
-
         if ($this->value == null && $value !== null) {
             return $this->preventXSS ? $this->preventXSSValue($value) : $value;
         }
@@ -178,13 +177,13 @@ class RequestItem extends ArrayIterator
             return $antiXss->xss_clean($value);
         };
 
-        if (is_string($value)) {
+        if (is_string($value) && !is_numeric($value) && !in_array($value, [true, false], true)) {
             $value = strip_tags($value);
         } else if (is_array($value)) {
             array_walk_recursive(
                 $value,
                 function (&$value) use ($preventString) {
-                    if (is_scalar($value)) {
+                    if (is_scalar($value) && !is_numeric($value) && !in_array($value, [true, false], true)) {
                         $value = $preventString($value);
                     }
                 }
