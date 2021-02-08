@@ -45,7 +45,11 @@ final class Request
             }
             return $data;
         } else {
-            return $this->checkValue($data);
+            $value = $this->checkValue($data);
+            if ($this->preventXSS) {
+                $value = $this->preventXSSValue($value);
+            }
+            return $value;
         }
     }
 
