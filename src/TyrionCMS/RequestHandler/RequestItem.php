@@ -74,31 +74,32 @@ class RequestItem extends ArrayIterator
         return $this->preventXSS ? $this->preventXSSValue($this->value) : $this->value;
     }
 
-    public function getValues()
+    public function getValues(array $preventXssExceptions = array())
     {
         if (is_array($this->values)) {
-            return $this->preventXSS ? $this->preventXSSValue($this->values) : $this->values;
+            return $this->preventXSS ? $this->preventXSSValue($this->values, $preventXssExceptions) : $this->values;
         }
 
         $values = array();
         while ($this->valid()) {
-            $values[$this->current()->getKey()] = $this->current()->setPreventXss($this->preventXSS)->getValue();
+            $values[$this->current()->getKey()] = $this->current()->setPreventXss($this->preventXSS && !in_array($this->current()->getKey(), $preventXssExceptions))->getValue();
             $this->next();
         }
         $this->values = $values;
+
         $this->rewind();
-        return $this->preventXSS ? $this->preventXSSValue($values) : $values;
+        return $this->preventXSS ? $this->preventXSSValue($values, $preventXssExceptions) : $values;
     }
 
-    public function getClearValues(array $ignoredParams = array())
+    public function getClearValues(array $ignoredParams = array(), array $preventXssExceptions = array())
     {
-        $params = $this->getValues();
+        $params = $this->getValues($preventXssExceptions);
         foreach ($params as $key => $param) {
             if (in_array($key, $this->getHiddenParams()) || in_array($key, $ignoredParams)) {
                 unset($params[$key]);
             }
         }
-        return $this->preventXSS ? $this->preventXSSValue($params) : $params;
+        return $this->preventXSS ? $this->preventXSSValue($params, $preventXssExceptions) : $params;
     }
 
 
@@ -171,21 +172,20 @@ class RequestItem extends ArrayIterator
         return $url;
     }
 
-    private function preventXSSValue($value)
+    private function preventXSSValue($value, array $preventXssExceptions = array())
     {
         $preventString = function (string $value) {
             $antiXss = new \voku\helper\AntiXSS();
             return $antiXss->xss_clean($value);
         };
-
         if (is_string($value) && !is_numeric($value) && !in_array($value, [true, false], true)) {
             $value = strip_tags($value);
         } else if (is_array($value)) {
             array_walk_recursive(
                 $value,
-                function (&$value) use ($preventString) {
+                function (&$value, $key) use ($preventString, $preventXssExceptions) {
                     if (is_scalar($value) && !is_numeric($value) && !in_array($value, [true, false], true)) {
-                        $value = $preventString($value);
+                        $value = !in_array($key, $preventXssExceptions) ? $preventString($value) : $value;
                     }
                 }
             );
