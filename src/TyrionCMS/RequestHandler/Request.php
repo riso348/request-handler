@@ -83,10 +83,18 @@ final class Request
     {
         if ($key == null) {
             $posts = array();
-            if (is_array($_POST)) {
+            if (is_array($_POST) && count($_POST) > 0) {
                 foreach ($_POST as $key => $value) {
                     $value = $this->parseDataType($value);
                     $posts[] = $this->createRequestItem('post', $key, $value);
+                }
+            } elseif ($_SERVER['CONTENT_TYPE'] ?? "" === 'application/json') {
+                $jsonData = @\json_decode(file_get_contents('php://input'), true);
+                if (is_array($jsonData) && count($jsonData) > 0) {
+                    foreach ($jsonData as $key => $value) {
+                        $value = $this->parseDataType($value);
+                        $posts[] = $this->createRequestItem('post', $key, $value);
+                    }
                 }
             }
             return $this->createFinalRequestItem($posts);
