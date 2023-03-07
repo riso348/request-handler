@@ -161,12 +161,14 @@ class RequestItem extends ArrayIterator
     {
         $url = "?";
         foreach ($this->getValues() as $key => $value) {
-            if (in_array($key, $this->getHiddenParams())) {
-                continue;
+            if(is_string($value)) {
+                if (in_array($key, $this->getHiddenParams())) {
+                    continue;
+                }
+                $url .= "$key=";
+                $url .= urlencode($value);
+                $url .= "&";
             }
-            $url .= "$key=";
-            $url .= urlencode($value);
-            $url .= "&";
         }
         $url = rtrim($url, '&');
         return $url;
