@@ -177,8 +177,8 @@ class RequestItem extends ArrayIterator
     private function preventXSSValue($value, array $preventXssExceptions = array())
     {
         $preventString = function (string $value) {
-            $antiXss = new \voku\helper\AntiXSS();
-            return $antiXss->xss_clean($value);
+            $antiXss = new \HTMLPurifier(\HTMLPurifier_Config::createDefault());
+            return $antiXss->purify($value);
         };
         if (is_string($value) && !is_numeric($value) && !in_array($value, [true, false], true)) {
             $value = strip_tags($value);
