@@ -17,6 +17,6 @@
     ],
     "require": {
         "php": ">=7.1.0",
-        "ezyang/htmlpurifier": "^4.16"
+        "ezyang/htmlpurifier": "4.16"
     }
 }
