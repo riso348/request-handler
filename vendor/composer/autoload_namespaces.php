@@ -7,5 +7,4 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'TyrionCMS\\RequestHandler' => array($baseDir . '/src'),
-    'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),
 );
