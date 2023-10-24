@@ -161,7 +161,7 @@ class RequestItem extends ArrayIterator
     {
         $url = "?";
         foreach ($this->getValues() as $key => $value) {
-            if(is_string($value)) {
+            if (is_string($value)) {
                 if (in_array($key, $this->getHiddenParams())) {
                     continue;
                 }
@@ -177,7 +177,10 @@ class RequestItem extends ArrayIterator
     private function preventXSSValue($value, array $preventXssExceptions = array())
     {
         $preventString = function (string $value) {
-            $antiXss = new \HTMLPurifier(\HTMLPurifier_Config::createDefault());
+            $config = \HTMLPurifier_Config::createDefault();
+            $config->set('Core.Encoding', 'UTF-8');
+            $config->set('Cache.SerializerPath', __DIR__ . "/../../../cache");
+            $antiXss = new \HTMLPurifier($config);
             return $antiXss->purify($value);
         };
         if (is_string($value) && !is_numeric($value) && !in_array($value, [true, false], true)) {
