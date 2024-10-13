@@ -134,6 +134,10 @@ final class Request
         return $requestItem;
     }
 
+    /**
+     * @param string $key
+     * @return string|null
+     */
     public static function getHeaderValue(string $key):?string
     {
         $header = null;
