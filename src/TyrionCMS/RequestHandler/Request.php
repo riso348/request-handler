@@ -134,5 +134,21 @@ final class Request
         return $requestItem;
     }
 
+    public static function getHeaderValue(string $key):?string
+    {
+        $header = null;
+        if (isset($_SERVER[$key])) {
+            $header = trim($_SERVER[$key]);
+        } else if (isset($_SERVER['HTTP_' . strtoupper(str_replace('-', '_', $key))])) {
+            $header = trim($_SERVER['HTTP_' . strtoupper(str_replace('-', '_', $key))]);
+        } elseif (function_exists('apache_request_headers')) {
+            $requestHeaders = apache_request_headers();
+            $requestHeaders = array_combine(array_map('ucwords', array_keys($requestHeaders)), array_values($requestHeaders));
+            if (isset($requestHeaders[$key])) {
+                $header = trim($requestHeaders[$key]);
+            }
+        }
+        return $header;
+    }
 
 }
