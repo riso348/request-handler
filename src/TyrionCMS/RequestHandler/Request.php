@@ -125,11 +125,11 @@ final class Request
         }
     }
 
-    private function createFinalRequestItem($data): RequestItem
+    private function createFinalRequestItem(array $data): RequestItem
     {
         $requestItem = new RequestItem($data);
         if ($this->requestItemHiddenParams) {
-            $requestItem->setHiddenParams($data);
+            $requestItem->setHiddenParams($this->requestItemHiddenParams);
         }
         return $requestItem;
     }
