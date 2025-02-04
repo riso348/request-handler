@@ -9,7 +9,7 @@ class RequestItem extends ArrayIterator
     private string $method;
     private string $key;
     private mixed $value = null;
-    private array $values;
+    private array $values = array();
     private array $hiddenParams = array();
     private bool $preventXSS = true;
 
