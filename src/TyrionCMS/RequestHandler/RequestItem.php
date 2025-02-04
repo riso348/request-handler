@@ -6,41 +6,41 @@ use TyrionCMS\RequestHandler\Exceptions\RequestFindException;
 class RequestItem extends ArrayIterator
 {
 
-    private $method;
-    private $key;
-    private $value = null;
-    private $values;
-    private $hiddenParams = array();
-    private $preventXSS = true;
+    private string $method;
+    private string $key;
+    private mixed $value = null;
+    private array $values;
+    private array $hiddenParams = array();
+    private bool $preventXSS = true;
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getMethod()
+    public function getMethod(): string
     {
         return $this->method;
     }
 
     /**
-     * @param mixed $method
+     * @param string $method
      */
-    public function setMethod($method)
+    public function setMethod(string $method): void
     {
         $this->method = $method;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getKey()
+    public function getKey(): string
     {
         return $this->key;
     }
 
     /**
-     * @param mixed $key
+     * @param string $key
      */
-    public function setKey($key)
+    public function setKey(string $key): void
     {
         $this->key = $key;
     }
@@ -56,7 +56,7 @@ class RequestItem extends ArrayIterator
     /**
      * @param array $hiddenParams
      */
-    public function setHiddenParams(array $hiddenParams)
+    public function setHiddenParams(array $hiddenParams): void
     {
         $this->hiddenParams = $hiddenParams;
     }
@@ -74,7 +74,7 @@ class RequestItem extends ArrayIterator
         return $this->preventXSS ? $this->preventXSSValue($this->value) : $this->value;
     }
 
-    public function getValues(array $preventXssExceptions = array())
+    public function getValues(array $preventXssExceptions = array()): array
     {
         if (is_array($this->values)) {
             return $this->preventXSS ? $this->preventXSSValue($this->values, $preventXssExceptions) : $this->values;
@@ -103,7 +103,13 @@ class RequestItem extends ArrayIterator
     }
 
 
-    public function find(string $key, $nullable = false): ?RequestItem
+    /**
+     * @param string $key
+     * @param $nullable
+     * @return RequestItem|null
+     * @throws RequestFindException
+     */
+    public function find(string $key, bool $nullable = false): ?RequestItem
     {
         $found = false;
         while ($this->valid()) {
@@ -117,7 +123,7 @@ class RequestItem extends ArrayIterator
         if ($found instanceof RequestItem) {
             $found->setPreventXss($this->preventXSS);
             return $found;
-        } elseif ($nullable) {
+        } elseif ($nullable === true) {
             return new RequestItem();
         }
         throw new RequestFindException("Unable to find request key: " . $key);
@@ -126,7 +132,7 @@ class RequestItem extends ArrayIterator
     /**
      * @param mixed $value
      */
-    public function setValue($value)
+    public function setValue(mixed $value): void
     {
         switch ($this->getMethod()) {
             case "request":
@@ -142,7 +148,7 @@ class RequestItem extends ArrayIterator
         $this->value = $value;
     }
 
-    public function delete()
+    public function delete(): void
     {
         switch ($this->getMethod()) {
             case "request":
@@ -198,7 +204,7 @@ class RequestItem extends ArrayIterator
         return $value;
     }
 
-    public function setPreventXss(bool $value)
+    public function setPreventXss(bool $value): RequestItem
     {
         $this->preventXSS = $value;
         return $this;

@@ -3,25 +3,25 @@
 
 final class Request
 {
-    private $requestItemHiddenParams;
+    private array|null $requestItemHiddenParams;
 
-    public function __construct(array $requestItemHiddenParams = null)
+    public function __construct(?array $requestItemHiddenParams = null)
     {
         $this->requestItemHiddenParams = $requestItemHiddenParams;
     }
 
     /**
      * @param null $key
-     * @return \TyrionCMS\RequestHandler\RequestItem|\TyrionCMS\RequestHandler\RequestItem[]
+     * @return RequestItem
      */
-    public function get($key = null)
+    public function get($key = null): RequestItem
     {
         if ($key == null) {
             $gets = array();
             if (is_array($_GET)) {
                 foreach ($_GET as $key => $value) {
                     $value = $this->parseDataType($value);
-                    $gets[] = $this->createRequestItem('get', $key, $value);;
+                    $gets[] = $this->createRequestItem('get', $key, $value);
                 }
             }
             return $this->createFinalRequestItem($gets);
@@ -49,9 +49,9 @@ final class Request
     {
         if (is_numeric($value) && ((string)$value)[0] === '0') {
             return $value;
-        } else if (is_numeric($value) && strpos(strval($value), '.') === false && strpos(strval($value), ',') === false && strlen(strval(intval($value))) === strlen((string)$value)) {
+        } else if (is_numeric($value) && !str_contains(strval($value), '.') && !str_contains(strval($value), ',') && strlen(strval(intval($value))) === strlen((string)$value)) {
             return (int)$value;
-        } elseif (is_numeric($value) && (strpos(strval($value), ',') !== false || strpos(strval($value), '.') !== false) && strlen(strval(floatval($value))) === strlen((string)$value)) {
+        } elseif (is_numeric($value) && (str_contains(strval($value), ',') || str_contains(strval($value), '.')) && strlen(strval(floatval($value))) === strlen((string)$value)) {
             return (float)str_replace(',', '.', strval($value));
         } elseif (is_scalar($value) && is_numeric(str_replace(',', '.', strval($value))) && strlen((string)floatval(str_replace(',', '.', $value))) === strlen(str_replace(',', '.', $value))) {
             return (float)str_replace(',', '.', strval($value));
@@ -76,10 +76,10 @@ final class Request
     }
 
     /**
-     * @param null $key
-     * @return \TyrionCMS\RequestHandler\RequestItem|\TyrionCMS\RequestHandler\RequestItem[]
+     * @param string|null $key
+     * @return RequestItem
      */
-    public function post($key = null)
+    public function post(?string $key = null): RequestItem
     {
         if ($key == null) {
             $posts = array();
@@ -89,7 +89,7 @@ final class Request
                     $posts[] = $this->createRequestItem('post', $key, $value);
                 }
             } elseif ($_SERVER['CONTENT_TYPE'] ?? "" === 'application/json') {
-                $jsonData = @\json_decode(file_get_contents('php://input'), true);
+                $jsonData = @json_decode(file_get_contents('php://input'), true);
                 if (is_array($jsonData) && count($jsonData) > 0) {
                     foreach ($jsonData as $key => $value) {
                         $value = $this->parseDataType($value);
@@ -106,9 +106,9 @@ final class Request
 
     /**
      * @param null $key
-     * @return \TyrionCMS\RequestHandler\RequestItem|\TyrionCMS\RequestHandler\RequestItem[]
+     * @return RequestItem
      */
-    public function request($key = null)
+    public function request($key = null): RequestItem
     {
         if ($key == null) {
             $requests = array();
@@ -138,7 +138,7 @@ final class Request
      * @param string $key
      * @return string|null
      */
-    public static function getHeaderValue(string $key):?string
+    public static function getHeaderValue(string $key): ?string
     {
         $header = null;
         if (isset($_SERVER[$key])) {
