@@ -185,7 +185,7 @@ class RequestItem extends ArrayIterator
         $preventString = function (string $value) {
             $config = \HTMLPurifier_Config::createDefault();
             $config->set('Core.Encoding', 'UTF-8');
-            $config->set('Cache.SerializerPath', __DIR__ . "/../../../cache");
+            $config->set('Cache.DefinitionImpl', null);
             $antiXss = new \HTMLPurifier($config);
             return $antiXss->purify($value);
         };
