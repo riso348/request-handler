@@ -2,7 +2,7 @@
     "name": "tyrion/request-handler",
     "keywords": ["request", "get", "post" , "handle"],
     "license": "MIT",
-    "version": "3.0.2",
+    "version": "3.0.3",
     "prefer-stable": true,
     "autoload": {
         "psr-0" : {
@@ -17,6 +17,6 @@
     ],
     "require": {
         "php": ">=8.3.0",
-        "ezyang/htmlpurifier": "4.17"
+        "ezyang/htmlpurifier": "v4.18.0"
     }
 }
