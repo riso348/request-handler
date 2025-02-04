@@ -2,7 +2,7 @@
     "name": "tyrion/request-handler",
     "keywords": ["request", "get", "post" , "handle"],
     "license": "MIT",
-    "version": "3.0.5",
+    "version": "3.0.6",
     "prefer-stable": true,
     "autoload": {
         "psr-0" : {
