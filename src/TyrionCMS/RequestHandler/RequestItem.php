@@ -68,7 +68,7 @@ class RequestItem extends ArrayIterator
      */
     public function getValue($value = null)
     {
-        if ($this->value == null && $value !== null) {
+        if ($this->value === null && $value !== null) {
             return $this->preventXSS ? $this->preventXSSValue($value) : $value;
         }
         return $this->preventXSS ? $this->preventXSSValue($this->value) : $this->value;
