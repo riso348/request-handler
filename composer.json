@@ -16,7 +16,6 @@
         }
     ],
     "require": {
-        "php": ">=8.3.0",
-        "ezyang/htmlpurifier": "v4.18.0"
+        "php": ">=8.3.0"
     }
 }

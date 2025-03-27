@@ -180,27 +180,28 @@ class RequestItem extends ArrayIterator
         return $url;
     }
 
-    private function preventXSSValue($value, array $preventXssExceptions = array())
+    private function preventXSSValue($value, array $preventXssExceptions = [])
     {
-        $preventString = function (string $value) {
-            $config = \HTMLPurifier_Config::createDefault();
-            $config->set('Core.Encoding', 'UTF-8');
-            $config->set('Cache.DefinitionImpl', null);
-            $antiXss = new \HTMLPurifier($config);
-            return $antiXss->purify($value);
+        $cleanString = function ($value) {
+            return htmlspecialchars(strip_tags($value), ENT_QUOTES | ENT_HTML5, 'UTF-8');
         };
+
         if (is_string($value) && !is_numeric($value) && !in_array($value, [true, false], true)) {
-            $value = strip_tags($value);
-        } else if (is_array($value)) {
+            // Pre reťazce odstránime tagy a escapujeme
+            $value = $cleanString($value);
+        } elseif (is_array($value)) {
+            // Rekurzívne spracovanie poľa
             array_walk_recursive(
                 $value,
-                function (&$value, $key) use ($preventString, $preventXssExceptions) {
-                    if (is_scalar($value) && !is_numeric($value) && !in_array($value, [true, false], true)) {
-                        $value = !in_array($key, $preventXssExceptions) ? $preventString($value) : $value;
+                function (&$val, $key) use ($cleanString, $preventXssExceptions) {
+                    if (is_scalar($val) && !is_numeric($val) && !in_array($val, [true, false], true)) {
+                        // Čistíme iba ak kľúč nie je vo výnimkách
+                        $val = !in_array($key, $preventXssExceptions) ? $cleanString($val) : $val;
                     }
                 }
             );
         }
+
         return $value;
     }
 
